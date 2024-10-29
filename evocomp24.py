@@ -17,6 +17,8 @@ TARGET = st.text_input("Enter your mutation rate")
 #TARGET: Our goal.
 TARGET = st.text_input("Enter your name")
 
+st.button("Calculate")
+
 #GENES: Options from which our population would be created.
 GENES = ' abcdefghijklmnopqrstuvwxyz'
 
