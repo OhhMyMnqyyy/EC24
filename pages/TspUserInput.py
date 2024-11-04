@@ -10,21 +10,6 @@ st.set_page_config(page_title="TSP Solver with Genetic Algorithm", layout="wide"
 
 st.title("Traveling Salesman Problem (TSP) Solver Using Genetic Algorithm")
 
-st.sidebar.header("Input Parameters")
-
-# Sidebar: Number of cities
-n_cities = st.sidebar.number_input("Number of Cities", min_value=3, max_value=20, value=10, step=1)
-
-# Sidebar: GA Parameters
-st.sidebar.subheader("Genetic Algorithm Parameters")
-n_population = st.sidebar.number_input("Population Size", min_value=50, max_value=1000, value=250, step=50)
-n_generations = st.sidebar.number_input("Number of Generations", min_value=50, max_value=1000, value=200, step=50)
-crossover_per = st.sidebar.slider("Crossover Percentage", min_value=0.5, max_value=1.0, value=0.8, step=0.05)
-mutation_per = st.sidebar.slider("Mutation Percentage", min_value=0.0, max_value=1.0, value=0.2, step=0.05)
-
-# Sidebar: Run Button
-run_button = st.sidebar.button("Run Genetic Algorithm")
-
 # Main Section: Input Cities
 st.header("Input Cities and Their Coordinates")
 
