@@ -10,6 +10,8 @@ st.set_page_config(page_title="TSP Solver with Genetic Algorithm", layout="wide"
 
 st.title("Traveling Salesman Problem (TSP) Solver Using Genetic Algorithm")
 
+st.sidebar.header("Input Parameters")
+
 # Sidebar: Number of cities
 n_cities = st.sidebar.number_input("Number of Cities", min_value=3, max_value=20, value=10, step=1)
 
