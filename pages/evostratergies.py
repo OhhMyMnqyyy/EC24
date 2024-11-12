@@ -1,4 +1,5 @@
 # ackley multimodal function
+import streamlit as st
 from numpy import arange
 from numpy import exp
 from numpy import sqrt
