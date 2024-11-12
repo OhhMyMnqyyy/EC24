@@ -30,8 +30,7 @@ axis = figure.add_subplot(111, projection='3d')  # Change is here
 # Previous line was incorrect: axis = figure.gca(projection='3d')
 axis.plot_surface(x, y, results, cmap='jet')
 # show the plot
-pyplot.show()
-
+st.pylplot(figure)
 
 # evolution strategy (mu, lambda) of the ackley objective function
 from numpy import asarray
@@ -111,8 +110,8 @@ mu = 20
 lam = 100
 # perform the evolution strategy (mu, lambda) search
 best, score = es_comma(objective, bounds, n_iter, step_size, mu, lam)
-print('Done!')
-print('f(%s) = %f' % (best, score))
+st.write('Done!')
+st.write('f(%s) = %f' % (best, score))
 
 
 # evolution strategy (mu + lambda) of the ackley objective function
@@ -194,5 +193,5 @@ mu = 20
 lam = 100
 # perform the evolution strategy (mu + lambda) search
 best, score = es_plus(objective, bounds, n_iter, step_size, mu, lam)
-print('Done!')
-print('f(%s) = %f' % (best, score))
+st.write('Done!')
+st.write('f(%s) = %f' % (best, score))
