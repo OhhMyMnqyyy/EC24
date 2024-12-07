@@ -4,30 +4,18 @@ import streamlit as st
 # Function to read the CSV file and convert it to the desired format
 def read_csv_to_dict(file_path):
     program_ratings = {}
-
+    
     with open(file_path, mode='r', newline='') as file:
         reader = csv.reader(file)
         # Skip the header
         header = next(reader)
-
+        
         for row in reader:
             program = row[0]
             ratings = [float(x) for x in row[1:]]  # Convert the ratings to floats
             program_ratings[program] = ratings
-
+    
     return program_ratings
-
-# User input for crossover rate and mutation rate
-try:
-    crossover_rate = float(input("Enter the crossover rate (e.g., 0.8): "))
-    mutation_rate = float(input("Enter the mutation rate (e.g., 0.2): "))
-    if not (0 <= crossover_rate <= 1 and 0 <= mutation_rate <= 1):
-        raise ValueError("Rates must be between 0 and 1.")
-except ValueError as e:
-    print("Invalid input:", e)
-    print("Using default rates: crossover_rate = 0.8, mutation_rate = 0.2.")
-    crossover_rate = 0.8
-    mutation_rate = 0.2
 
 # Path to the CSV file
 file_path = 'pages/program_ratings.csv'
@@ -39,12 +27,17 @@ program_ratings_dict = read_csv_to_dict(file_path)
 for program, ratings in program_ratings_dict.items():
     print(f"'{program}': {ratings},")
 
+
+import random
+
 ##################################### DEFINING PARAMETERS AND DATASET ################################################################
 # Sample rating programs dataset for each time slot.
 ratings = program_ratings_dict
 
 GEN = 100
 POP = 50
+CO_R = 0.8
+MUT_R = 0.2
 EL_S = 2
 
 all_programs = list(ratings.keys()) # all programs
@@ -112,7 +105,9 @@ def evaluate_fitness(schedule):
 
 # genetic algorithms with parameters
 
-def genetic_algorithm(initial_schedule, generations=GEN, population_size=POP, crossover_rate=crossover_rate, mutation_rate=mutation_rate, elitism_size=EL_S):
+
+
+def genetic_algorithm(initial_schedule, generations=GEN, population_size=POP, crossover_rate=CO_R, mutation_rate=MUT_R, elitism_size=EL_S):
 
     population = [initial_schedule]
 
@@ -124,7 +119,7 @@ def genetic_algorithm(initial_schedule, generations=GEN, population_size=POP, cr
     for generation in range(generations):
         new_population = []
 
-        # Elitism
+        # Elitsm
         population.sort(key=lambda schedule: fitness_function(schedule), reverse=True)
         new_population.extend(population[:elitism_size])
 
