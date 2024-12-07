@@ -30,7 +30,7 @@ except ValueError as e:
     mutation_rate = 0.2
 
 # Path to the CSV file
-file_path = '/content/program_ratings.csv'
+file_path = 'pages/program_ratings.csv'
 
 # Get the data in the required format
 program_ratings_dict = read_csv_to_dict(file_path)
