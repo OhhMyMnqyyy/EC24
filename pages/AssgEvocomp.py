@@ -59,17 +59,17 @@ def finding_best_schedule(all_schedules):
     return best_schedule
 
 # Genetic Algorithm functions
-def crossover(schedule1, schedule2):
-    crossover_point = random.randint(1, len(schedule1) - 2)
-    child1 = schedule1[:crossover_point] + schedule2[crossover_point:]
-    child2 = schedule2[:crossover_point] + schedule1[crossover_point:]
-    return child1, child2
-
 def mutate(schedule):
     mutation_point = random.randint(0, len(schedule) - 1)
     new_program = random.choice(all_programs)
     schedule[mutation_point] = new_program
     return schedule
+
+def crossover(schedule1, schedule2):
+    crossover_point = random.randint(1, len(schedule1) - 2)
+    child1 = schedule1[:crossover_point] + schedule2[crossover_point:]
+    child2 = schedule2[:crossover_point] + schedule1[crossover_point:]
+    return child1, child2
 
 def genetic_algorithm(initial_schedule, generations, population_size, crossover_rate, mutation_rate, elitism_size):
     population = [initial_schedule]
@@ -100,8 +100,8 @@ def genetic_algorithm(initial_schedule, generations, population_size, crossover_
 st.title("TV Program Scheduling Optimization")
 
 # User input for mutation rate and crossover rate
-mutation_rate = st.slider("Mutation Rate", min_value=0.0, max_value=1.0, value=0.2, step=0.01)
 crossover_rate = st.slider("Crossover Rate", min_value=0.0, max_value=1.0, value=0.8, step=0.01)
+mutation_rate = st.slider("Mutation Rate", min_value=0.0, max_value=1.0, value=0.2, step=0.01)
 
 # Initial brute force schedule
 all_possible_schedules = initialize_pop(all_programs, all_time_slots)
