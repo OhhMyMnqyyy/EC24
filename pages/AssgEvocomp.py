@@ -101,7 +101,7 @@ st.title("TV Program Scheduling Optimization")
 
 # User input for mutation rate and crossover rate
 crossover_rate = st.slider("Crossover Rate", min_value=0.0, max_value=1.0, value=0.8, step=0.01)
-mutation_rate = st.slider("Mutation Rate", min_value=0.0, max_value=1.0, value=0.2, step=0.01)
+mutation_rate = st.slider("Mutation Rate", min_value=0.01, max_value=0.05, value=0.2, step=0.01)
 
 # Initial brute force schedule
 all_possible_schedules = initialize_pop(all_programs, all_time_slots)
