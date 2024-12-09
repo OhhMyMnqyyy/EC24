@@ -6,7 +6,7 @@ import pandas as pd
 # Function to read the CSV file and convert it to the desired format
 def read_csv_to_dict(file_path):
     program_ratings = {}
-    with open(file_path, mode='r', newline='') as file:
+    with open(file_path, mode='r', newline='') as file: 
         reader = csv.reader(file)
         # Skip the header
         header = next(reader)
