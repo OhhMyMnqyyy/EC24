@@ -134,3 +134,11 @@ st.table(schedule_df)
 # Display total ratings
 st.write("### Total Ratings")
 st.write(f"**{fitness_function(final_schedule)}**")
+
+calculate = st.form_submit_button("Calculate")
+
+    if calculate:
+        main(POP, GEN, crossover_rate, mutation_rate)
+
+
+
