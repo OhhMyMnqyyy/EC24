@@ -3,66 +3,119 @@ import streamlit as st
 import random
 import pandas as pd
 
-# Read CSV Function
-def read_csv_to_dict(file):
+# Function to read the CSV file and convert it to the desired format
+def read_csv_to_dict(file_path):
     program_ratings = {}
-    reader = csv.reader(file)
-    header = next(reader)
-    for row in reader:
-        program = row[0]
-        ratings = [float(x) for x in row[1:]]
-        program_ratings[program] = ratings
+    with open(file_path, mode='r', newline='') as file:
+        reader = csv.reader(file)
+        # Skip the header
+        header = next(reader)
+        for row in reader:
+            program = row[0]
+            ratings = [float(x) for x in row[1:]]  # Convert the ratings to floats
+            program_ratings[program] = ratings
     return program_ratings
 
-# Fitness Function
-def fitness_function(schedule):
-    return sum(program_ratings_dict[program][i] for i, program in enumerate(schedule))
+# Path to the CSV file
+file_path = 'pages/program_ratings.csv'
 
-# Genetic Algorithm Functions
+# Get the data in the required format
+program_ratings_dict = read_csv_to_dict(file_path)
+
+# Parameters and dataset
+GEN = 100
+POP = 50
+EL_S = 2
+
+all_programs = list(program_ratings_dict.keys())
+all_time_slots = list(range(6, 24))  # Time slots from 6 AM to 11 PM
+
+# Defining fitness function
+def fitness_function(schedule):
+    total_rating = 0
+    for time_slot, program in enumerate(schedule):
+        total_rating += program_ratings_dict[program][time_slot]
+    return total_rating
+
+# Initializing population (optimized to avoid brute force)
+def initialize_population(programs, time_slots, pop_size):
+    population = []
+    for _ in range(pop_size):
+        random_schedule = random.sample(programs, len(time_slots))
+        population.append(random_schedule)
+    return population
+
+# Genetic Algorithm functions
 def mutate(schedule):
-    schedule[random.randint(0, len(schedule) - 1)] = random.choice(all_programs)
+    mutation_point = random.randint(0, len(schedule) - 1)
+    new_program = random.choice(all_programs)
+    schedule[mutation_point] = new_program
     return schedule
 
 def crossover(schedule1, schedule2):
-    point = random.randint(1, len(schedule1) - 1)
-    return schedule1[:point] + schedule2[point:], schedule2[:point] + schedule1[point:]
+    crossover_point = random.randint(1, len(schedule1) - 2)
+    child1 = schedule1[:crossover_point] + schedule2[crossover_point:]
+    child2 = schedule2[:crossover_point] + schedule1[crossover_point:]
+    return child1, child2
 
 def genetic_algorithm(generations, population_size, crossover_rate, mutation_rate, elitism_size):
-    population = [[random.choice(all_programs) for _ in all_time_slots] for _ in range(population_size)]
-    for _ in range(generations):
-        population.sort(key=lambda s: fitness_function(s), reverse=True)
+    # Initialize population
+    population = initialize_population(all_programs, all_time_slots, population_size)
+
+    for generation in range(generations):
+        # Sort population by fitness
+        population.sort(key=lambda schedule: fitness_function(schedule), reverse=True)
+
+        # Elitism: keep top individuals
         new_population = population[:elitism_size]
+
+        # Generate new individuals through crossover and mutation
         while len(new_population) < population_size:
-            p1, p2 = random.sample(population[:10], 2)
+            parent1, parent2 = random.sample(population[:10], 2)
             if random.random() < crossover_rate:
-                c1, c2 = crossover(p1, p2)
+                child1, child2 = crossover(parent1, parent2)
             else:
-                c1, c2 = p1[:], p2[:]
+                child1, child2 = parent1[:], parent2[:]
+            
             if random.random() < mutation_rate:
-                c1 = mutate(c1)
+                child1 = mutate(child1)
             if random.random() < mutation_rate:
-                c2 = mutate(c2)
-            new_population.extend([c1, c2])
+                child2 = mutate(child2)
+            
+            new_population.extend([child1, child2])
+        
+        # Replace population with new generation
         population = new_population[:population_size]
+
+    # Return the best schedule
     return max(population, key=fitness_function)
 
 # Streamlit App
 st.title("TV Program Scheduling Optimization")
 
-uploaded_file = st.file_uploader("Upload CSV File", type="csv")
-if uploaded_file:
-    program_ratings_dict = read_csv_to_dict(uploaded_file)
-    all_programs = list(program_ratings_dict.keys())
-    all_time_slots = list(range(6, 24))  # Time slots from 6 AM to 11 PM
+# User input for mutation rate and crossover rate
+crossover_rate = st.slider("Crossover Rate", min_value=0.0, max_value=0.95, value=0.8, step=0.01)
+mutation_rate = st.slider("Mutation Rate", min_value=0.01, max_value=0.05, value=0.02, step=0.01)
 
-    with st.form("input_form"):
-        crossover_rate = st.slider("Crossover Rate", 0.0, 0.95, 0.8, 0.01)
-        mutation_rate = st.slider("Mutation Rate", 0.01, 0.05, 0.02, 0.01)
-        calculate = st.form_submit_button("Calculate")
+# Add a button to calculate the schedule
+if st.button("Calculate"):
+    # Run Genetic Algorithm
+    optimal_schedule = genetic_algorithm(
+        generations=GEN,
+        population_size=POP,
+        crossover_rate=crossover_rate,
+        mutation_rate=mutation_rate,
+        elitism_size=EL_S
+    )
 
-    if calculate:
-        schedule = genetic_algorithm(GEN, POP, crossover_rate, mutation_rate, EL_S)
-        st.write("### Final Optimal Schedule")
-        df = pd.DataFrame({"Time Slot": [f"{t}:00" for t in all_time_slots], "Program": schedule})
-        st.table(df)
-        st.write(f"**Total Ratings: {fitness_function(schedule)}**")
+    # Display final schedule
+    st.write("### Final Optimal Schedule")
+    schedule_df = pd.DataFrame({
+        "Time Slot": [f"{time:02d}:00" for time in all_time_slots],
+        "Program": optimal_schedule
+    })
+    st.table(schedule_df)
+
+    # Display total ratings
+    st.write("### Total Ratings")
+    st.write(f"**{fitness_function(optimal_schedule)}**")
