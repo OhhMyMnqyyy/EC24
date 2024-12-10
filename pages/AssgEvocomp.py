@@ -30,6 +30,7 @@ EL_S = 2
 all_programs = list(program_ratings_dict.keys())
 all_time_slots = list(range(6, 24))  # Time slots from 6 AM to 11 PM
 
+if st.button("Calculate"):
 # Defining fitness function
 def fitness_function(schedule):
     total_rating = 0
@@ -98,15 +99,6 @@ crossover_rate = st.slider("Crossover Rate", min_value=0.0, max_value=0.95, valu
 mutation_rate = st.slider("Mutation Rate", min_value=0.01, max_value=0.05, value=0.02, step=0.01)
 
 # Add a button to calculate the schedule
-if st.button("Calculate"):
-    # Run Genetic Algorithm
-    optimal_schedule = genetic_algorithm(
-        generations=GEN,
-        population_size=POP,
-        crossover_rate=crossover_rate,
-        mutation_rate=mutation_rate,
-        elitism_size=EL_S
-    )
 
     # Display final schedule
     st.write("### Final Optimal Schedule")
