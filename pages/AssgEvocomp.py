@@ -30,69 +30,6 @@ EL_S = 2
 all_programs = list(program_ratings_dict.keys())
 all_time_slots = list(range(6, 24))  # Time slots from 6 AM to 11 PM
 
-calculate = st.form_submit_button("Calculate")
-
-if calculate:
-# Defining fitness function
-def fitness_function(schedule):
-    total_rating = 0
-    for time_slot, program in enumerate(schedule):
-        total_rating += program_ratings_dict[program][time_slot]
-    return total_rating
-
-# Initializing population (optimized to avoid brute force)
-def initialize_population(programs, time_slots, pop_size):
-    population = []
-    for _ in range(pop_size):
-        random_schedule = random.sample(programs, len(time_slots))
-        population.append(random_schedule)
-    return population
-
-# Genetic Algorithm functions
-def mutate(schedule):
-    mutation_point = random.randint(0, len(schedule) - 1)
-    new_program = random.choice(all_programs)
-    schedule[mutation_point] = new_program
-    return schedule
-
-def crossover(schedule1, schedule2):
-    crossover_point = random.randint(1, len(schedule1) - 2)
-    child1 = schedule1[:crossover_point] + schedule2[crossover_point:]
-    child2 = schedule2[:crossover_point] + schedule1[crossover_point:]
-    return child1, child2
-
-def genetic_algorithm(generations, population_size, crossover_rate, mutation_rate, elitism_size):
-    # Initialize population
-    population = initialize_population(all_programs, all_time_slots, population_size)
-
-    for generation in range(generations):
-        # Sort population by fitness
-        population.sort(key=lambda schedule: fitness_function(schedule), reverse=True)
-
-        # Elitism: keep top individuals
-        new_population = population[:elitism_size]
-
-        # Generate new individuals through crossover and mutation
-        while len(new_population) < population_size:
-            parent1, parent2 = random.sample(population[:10], 2)
-            if random.random() < crossover_rate:
-                child1, child2 = crossover(parent1, parent2)
-            else:
-                child1, child2 = parent1[:], parent2[:]
-            
-            if random.random() < mutation_rate:
-                child1 = mutate(child1)
-            if random.random() < mutation_rate:
-                child2 = mutate(child2)
-            
-            new_population.extend([child1, child2])
-        
-        # Replace population with new generation
-        population = new_population[:population_size]
-
-    # Return the best schedule
-    return max(population, key=fitness_function)
-
 # Streamlit App
 st.title("TV Program Scheduling Optimization")
 
@@ -101,6 +38,75 @@ crossover_rate = st.slider("Crossover Rate", min_value=0.0, max_value=0.95, valu
 mutation_rate = st.slider("Mutation Rate", min_value=0.01, max_value=0.05, value=0.02, step=0.01)
 
 # Add a button to calculate the schedule
+if st.button("Calculate"):
+    # Defining fitness function
+    def fitness_function(schedule):
+        total_rating = 0
+        for time_slot, program in enumerate(schedule):
+            total_rating += program_ratings_dict[program][time_slot]
+        return total_rating
+
+    # Initializing population (optimized to avoid brute force)
+    def initialize_population(programs, time_slots, pop_size):
+        population = []
+        for _ in range(pop_size):
+            random_schedule = random.sample(programs, len(time_slots))
+            population.append(random_schedule)
+        return population
+
+    # Genetic Algorithm functions
+    def mutate(schedule):
+        mutation_point = random.randint(0, len(schedule) - 1)
+        new_program = random.choice(all_programs)
+        schedule[mutation_point] = new_program
+        return schedule
+
+    def crossover(schedule1, schedule2):
+        crossover_point = random.randint(1, len(schedule1) - 2)
+        child1 = schedule1[:crossover_point] + schedule2[crossover_point:]
+        child2 = schedule2[:crossover_point] + schedule1[crossover_point:]
+        return child1, child2
+
+    def genetic_algorithm(generations, population_size, crossover_rate, mutation_rate, elitism_size):
+        # Initialize population
+        population = initialize_population(all_programs, all_time_slots, population_size)
+
+        for generation in range(generations):
+            # Sort population by fitness
+            population.sort(key=lambda schedule: fitness_function(schedule), reverse=True)
+
+            # Elitism: keep top individuals
+            new_population = population[:elitism_size]
+
+            # Generate new individuals through crossover and mutation
+            while len(new_population) < population_size:
+                parent1, parent2 = random.sample(population[:10], 2)
+                if random.random() < crossover_rate:
+                    child1, child2 = crossover(parent1, parent2)
+                else:
+                    child1, child2 = parent1[:], parent2[:]
+
+                if random.random() < mutation_rate:
+                    child1 = mutate(child1)
+                if random.random() < mutation_rate:
+                    child2 = mutate(child2)
+
+                new_population.extend([child1, child2])
+
+            # Replace population with new generation
+            population = new_population[:population_size]
+
+        # Return the best schedule
+        return max(population, key=fitness_function)
+
+    # Run the genetic algorithm
+    optimal_schedule = genetic_algorithm(
+        generations=GEN,
+        population_size=POP,
+        crossover_rate=crossover_rate,
+        mutation_rate=mutation_rate,
+        elitism_size=EL_S
+    )
 
     # Display final schedule
     st.write("### Final Optimal Schedule")
