@@ -103,6 +103,11 @@ st.title("TV Program Scheduling Optimization")
 crossover_rate = st.slider("Crossover Rate", min_value=0.0, max_value=0.95, value=0.8, step=0.01)
 mutation_rate = st.slider("Mutation Rate", min_value=0.01, max_value=0.05, value=0.2, step=0.01)
 
+calculate = st.form_submit_button("Calculate")
+
+if calculate:
+        main(POP, GEN, crossover_rate, mutation_rate)
+
 # Initial brute force schedule
 all_possible_schedules = initialize_pop(all_programs, all_time_slots)
 initial_best_schedule = finding_best_schedule(all_possible_schedules)
@@ -135,10 +140,6 @@ st.table(schedule_df)
 st.write("### Total Ratings")
 st.write(f"**{fitness_function(final_schedule)}**")
 
-calculate = st.form_submit_button("Calculate")
-
-if calculate:
-        main(POP, GEN, crossover_rate, mutation_rate)
 
 
 
