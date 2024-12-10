@@ -137,7 +137,7 @@ st.write(f"**{fitness_function(final_schedule)}**")
 
 calculate = st.form_submit_button("Calculate")
 
-    if calculate:
+if calculate:
         main(POP, GEN, crossover_rate, mutation_rate)
 
 
