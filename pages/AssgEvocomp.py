@@ -30,7 +30,9 @@ EL_S = 2
 all_programs = list(program_ratings_dict.keys())
 all_time_slots = list(range(6, 24))  # Time slots from 6 AM to 11 PM
 
-if st.button("Calculate"):
+calculate = st.form_submit_button("Calculate")
+
+if calculate:
 # Defining fitness function
 def fitness_function(schedule):
     total_rating = 0
