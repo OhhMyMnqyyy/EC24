@@ -20,7 +20,7 @@ def read_csv_to_dict(file_path):
 file_path = 'pages/program_ratings_modif.csv'
 
 # Get the data in the required format
-program_ratings_dict = read_csv_to_dict(file_path)
+program_ratings_modif_dict = read_csv_to_dict(file_path)
 
 # Parameters and dataset
 GEN = 100
