@@ -27,7 +27,7 @@ GEN = 100
 POP = 50
 EL_S = 2
 
-all_programs = list(program_ratings_dict.keys())
+all_programs = list(program_ratings_modif_dict.keys())
 all_time_slots = list(range(6, 24))  # Time slots from 6 AM to 11 PM
 
 # Streamlit App
@@ -43,7 +43,7 @@ if st.button("Calculate"):
     def fitness_function(schedule):
         total_rating = 0
         for time_slot, program in enumerate(schedule):
-            total_rating += program_ratings_dict[program][time_slot]
+            total_rating += program_ratings_modif_dict[program][time_slot]
         return total_rating
 
     # initializing the population
