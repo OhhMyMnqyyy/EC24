@@ -35,7 +35,7 @@ st.title("TV Program Scheduling Optimization")
 
 # User input for mutation rate and crossover rate
 CO_R = st.slider("Crossover Rate", min_value=0.0, max_value=0.95, value=0.8, step=0.01)
-MUT_R = st.slider("Mutation Rate", min_value=0.01, max_value=0.05, value=0.2, step=0.01)
+MUT_R = st.slider("Mutation Rate", min_value=0.01, max_value=0.05, value=0.02, step=0.01)
 
 # Add a button to calculate the schedule
 if st.button("Calculate"):
