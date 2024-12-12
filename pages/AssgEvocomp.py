@@ -43,7 +43,7 @@ if st.button("Calculate"):
     def fitness_function(schedule):
         total_rating = 0
         for time_slot, program in enumerate(schedule):
-            total_rating += program_ratings_modif_dict[program][time_slot]
+            total_rating += program_ratings_dict[program][time_slot]
         return total_rating
 
     # initializing the population
